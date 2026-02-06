@@ -16,15 +16,27 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate {
     }
 
     func defaultTrialVoice(from voices: [VoiceOption]) -> VoiceOption? {
-        if let ng = voices.first(where: { $0.locale.lowercased().hasPrefix("en-ng") }) {
+        if let ng = preferredNigerianFemaleVoice(from: voices) {
             return ng
         }
         return voices.first
     }
 
+    private func preferredNigerianFemaleVoice(from voices: [VoiceOption]) -> VoiceOption? {
+        let nigerian = voices.filter { $0.locale.lowercased().hasPrefix("en-ng") }
+        guard !nigerian.isEmpty else { return nil }
+
+        let preferred = nigerian.first { voice in
+            let name = voice.name.lowercased()
+            return name.contains("female") || name.contains("woman")
+        }
+
+        return preferred ?? nigerian.first
+    }
+
     func starterVoices(from voices: [VoiceOption]) -> [StarterVoiceOption] {
         let starters: [(label: String, localePrefix: String)] = [
-            ("Confident Nigerian English", "en-ng"),
+            ("Nigerian English (Woman)", "en-ng"),
             ("Warm Ghanaian English", "en-gh"),
             ("Clear Kenyan English", "en-ke"),
             ("Rich South African English", "en-za")

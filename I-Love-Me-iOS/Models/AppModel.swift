@@ -11,6 +11,7 @@ final class AppModel: ObservableObject {
     @Published var selectedVoice: VoiceOption?
     @Published private(set) var voiceOptions: [VoiceOption] = []
     @Published private(set) var starterVoiceOptions: [StarterVoiceOption] = []
+    @Published var selectedRecordingIDs: Set<UUID> = []
 
     let playbackManager = PlaybackManager()
     let speechService = SpeechService()
@@ -36,7 +37,9 @@ final class AppModel: ObservableObject {
 
     func toggleRecording() {
         if recordingService.isRecording {
-            recordingService.stopRecording()
+            if let item = recordingService.stopRecording() {
+                selectedRecordingIDs.insert(item.id)
+            }
         } else {
             recordingService.startRecording()
         }
@@ -60,7 +63,9 @@ final class AppModel: ObservableObject {
                 speechService: speechService
             )
         case .recordings:
-            let urls = recordingService.recordings.map { $0.url }
+            let recordings = recordingService.recordings
+            let selected = recordings.filter { selectedRecordingIDs.contains($0.id) }
+            let urls = (selected.isEmpty ? recordings : selected).map { $0.url }
             playbackManager.startRecordingLoop(
                 urls: urls,
                 duration: duration

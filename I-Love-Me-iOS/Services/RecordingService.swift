@@ -46,7 +46,8 @@ final class RecordingService: NSObject, ObservableObject {
         }
     }
 
-    func stopRecording() {
+    @discardableResult
+    func stopRecording() -> RecordingItem? {
         recorder?.stop()
         let recordedURL = currentRecordingURL
         recorder = nil
@@ -54,8 +55,12 @@ final class RecordingService: NSObject, ObservableObject {
         isRecording = false
 
         if let url = recordedURL {
-            recordings.append(RecordingItem(url: url, createdAt: Date()))
+            let item = RecordingItem(url: url, createdAt: Date())
+            recordings.append(item)
+            return item
         }
+
+        return nil
     }
 
     private static func makeRecordingURL() -> URL {

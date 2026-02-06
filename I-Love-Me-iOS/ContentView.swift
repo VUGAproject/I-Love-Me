@@ -32,6 +32,7 @@ struct ContentView: View {
 
                     RecordingListView(
                         recordings: $model.recordingService.recordings,
+                        selectedRecordingIDs: $model.selectedRecordingIDs,
                         isRecording: model.recordingService.isRecording,
                         onRecordToggle: model.toggleRecording
                     )

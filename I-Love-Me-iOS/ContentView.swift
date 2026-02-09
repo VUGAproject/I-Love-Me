@@ -9,9 +9,10 @@ struct ContentView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack(spacing: 12) {
-                        Image(systemName: "heart.fill")
-                            .font(.system(size: 40))
-                            .foregroundStyle(.white)
+                        Image("AppHearticon")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
                             .accessibilityHidden(true)
                         Text("I Love ME")
                             .font(.largeTitle.bold())
